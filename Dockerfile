@@ -40,4 +40,36 @@ RUN apt-get update && apt-get install -y \
 # Create directories for the app
 RUN mkdir -p /app/src /app/config /app/static /app/db /app/media /app/indexdir /app/users \
     /app/thumbnail_cache /app/cache/reports /app/cache/export /app/cache/request_cache /app/cache/persistent_cache \
-    /app/tmp /app/persist /root/gramps/gramps$GRAMPS_VERSION_
+    /app/tmp /app/persist /root/gramps/gramps${GRAMPS_VERSION}/plugins
+
+# Set Gramps environment variables
+ENV GRAMPSWEB_USER_DB_URI=sqlite:////app/users/users.sqlite
+ENV GRAMPSWEB_MEDIA_BASE_DIR=/app/media
+ENV GRAMPSWEB_SEARCH_INDEX_DB_URI=sqlite:////app/indexdir/search_index.db
+ENV GRAMPSWEB_STATIC_PATH=/app/static
+ENV GRAMPSWEB_THUMBNAIL_CACHE_CONFIG__CACHE_DIR=/app/thumbnail_cache
+ENV GRAMPSWEB_REQUEST_CACHE_CONFIG__CACHE_DIR=/app/cache/request_cache
+ENV GRAMPSWEB_PERSISTENT_CACHE_CONFIG__CACHE_DIR=/app/cache/persistent_cache
+ENV GRAMPSWEB_REPORT_DIR=/app/cache/reports
+ENV GRAMPSWEB_EXPORT_DIR=/app/cache/export
+ENV GRAMPSHOME=/root
+ENV GRAMPS_DATABASE_PATH=/root/.gramps/grampsdb
+
+# Install Gunicorn and Gramps Web API
+RUN python3 -m pip install --no-cache-dir --break-system-packages gunicorn gramps-webapi==3.4.1 psycopg2-binary
+
+# Copy application source
+COPY . /app/src
+
+# Install the app itself
+RUN python3 -m pip install --no-cache-dir --break-system-packages /app/src
+
+# Expose the Render port
+EXPOSE 8080
+
+# Copy entrypoint script (optional, but matches your repo)
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Start Gunicorn web server
+CMD gunicorn -w 2 -b 0.0.0.0:${PORT:-8080} "gramps_webapi.app:create_app()" --timeout 120 --limit-request-line 8190
