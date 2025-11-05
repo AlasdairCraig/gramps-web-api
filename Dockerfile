@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libgl1-mesa-dev \
     libgtk2.0-dev \
-    liblapack-dev \  # Alternative for libatlas-base-dev
+    liblapack-dev \
     tesseract-ocr \
     libopenblas-dev \
     cmake \
