@@ -57,8 +57,9 @@ ENV GRAMPS_DATABASE_PATH=/root/.gramps/grampsdb
 
 # Install Gunicorn and Gramps Web API
 RUN python3 -m pip install --no-cache-dir --upgrade --ignore-installed pip setuptools wheel
+RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+RUN python3 -m pip install --no-cache-dir psycopg2-binary==2.9.9
 RUN python3 -m pip install --no-cache-dir gunicorn gramps-webapi==3.4.1 psycopg[binary]==3.2.3
-
 
 # Copy application source
 COPY . /app/src
