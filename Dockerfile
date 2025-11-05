@@ -56,7 +56,7 @@ ENV GRAMPSHOME=/root
 ENV GRAMPS_DATABASE_PATH=/root/.gramps/grampsdb
 
 # Install Gunicorn and Gramps Web API
-RUN pip install --no-cache-dir gunicorn gramps-webapi==3.4.1 psycopg[binary]
+RUN pip install --no-cache-dir gunicorn gramps-webapi==3.4.1 psycopg2-binary==2.9.9
 
 # Copy application source
 COPY . /app/src
