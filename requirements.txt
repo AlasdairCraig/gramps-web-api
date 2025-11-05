@@ -1,0 +1,7 @@
+gramps-webapi==3.4.1
+gunicorn
+psycopg2-binary
+Flask
+Flask-SQLAlchemy
+Flask-CORS
+Flask-JWT-Extended
