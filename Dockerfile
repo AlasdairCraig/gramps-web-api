@@ -102,5 +102,6 @@ EXPOSE 5000
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD gunicorn -w ${GUNICORN_NUM_WORKERS:-8} -b 0.0.0.0:${PORT:-5000} gramps_webapi.wsgi:app --timeout ${GUNICORN_TIMEOUT:-120} --limit-request-line 8190
+CMD gunicorn -w ${GUNICORN_NUM_WORKERS:-4} -b 0.0.0.0:${PORT:-5000} "gramps_webapi.app:app" --timeout ${GUNICORN_TIMEOUT:-120} --limit-request-line 8190
+
 
